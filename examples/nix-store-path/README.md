@@ -144,6 +144,15 @@ resource "aws_instance" "webserver" {
 }
 ```
 
+If you use [Default Host Management Configuration](https://docs.aws.amazon.com/systems-manager/latest/userguide/fleet-manager-default-host-management-configuration.html) you need to attach the IAM policy to the IAM role that is configured there instead of the instance profile. For example like this:
+
+```hcl
+resource "aws_iam_role_policy_attachment" "dhmc" {
+  role       = "AWS-QuickSetup-SSM-DefaultEC2MgmtRole-eu-central-1"
+  policy_arn = aws_iam_policy.read_cache.arn
+}
+```
+
 And that's all! You've succefully deployed a NixOS configuration to a set of instances
 using SSM and a self-hosted binary cache. A next step would be to put this all in a pipeline.
 
