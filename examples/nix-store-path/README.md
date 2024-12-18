@@ -8,6 +8,9 @@ configuration, but only substitute the store path. This means that the instances
 do not require a lot of memory or CPU to deploy the configuration and also means
 they only need access to S3 but not the public internet.
 
+The whole example can be found in [main.tf](./main.tf), but we will go through the most
+important parts of the file here.
+
 First, we need to generate a signing key to sign store paths that we want to push to the cache.
 
 ```shell
