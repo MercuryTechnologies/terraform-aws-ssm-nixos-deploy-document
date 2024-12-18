@@ -37,9 +37,9 @@ aws ssm send-command \
 
 ### Deploying a flake ref using an SSM State Manager association
 
-Note that by default terraform will wait for the 
+See [examples/flakeref](./examples/flakeref) for a complete example.
 
-```
+```hcl
 resource "aws_ssm_association" {
   name = module.nixos_deploy_document.id
   targets {
@@ -54,7 +54,10 @@ resource "aws_ssm_association" {
 
 ### Deploying a nix store path an SSM State Manager association
 
-```
+
+See [examples/flakeref](./examples/nix-store-path) for a complete example.
+
+```hcl
 resource "aws_ssm_association" {
   name = module.nixos_deploy_document.id
   targets {
