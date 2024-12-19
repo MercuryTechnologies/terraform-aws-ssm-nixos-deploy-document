@@ -23,43 +23,54 @@
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
     in
     {
-      checks = forAllSystems (system: {
-        pre-commit-check = pre-commit-hooks.lib.${system}.run {
-          src = ./.;
-          hooks = {
-            shellcheck.enable = true;
-            actionlint.enable = true;
-            tflint.enable = true;
-            terraform-format.enable = true;
-            # terraform-validate.enable = true;
+      checks = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          pre-commit-check = pre-commit-hooks.lib.${system}.run {
+            src = ./.;
+            hooks = {
+              shellcheck.enable = true;
+              actionlint.enable = true;
+              tflint.enable = true;
+              terraform-format.enable = true;
+              # terraform-validate.enable = true;
 
-            terraform-docs = {
-              enable = true;
-              name = "terraform-docs";
-              entry = "terraform-docs markdown --recursive --recursive-path examples --output-file README.md .";
-              files = "(README.md|\\.tf)$";
-              pass_filenames = false;
-              language = "system";
+              terraform-docs = {
+                enable = true;
+                name = "terraform-docs";
+                entry = "${pkgs.terraform-docs}/bin/terraform-docs markdown --recursive --recursive-path examples --output-file README.md .";
+                files = "(README.md|\\.tf)$";
+                pass_filenames = false;
+                language = "system";
 
+              };
+              nixfmt-rfc-style.enable = true;
             };
-            nixfmt-rfc-style.enable = true;
           };
-        };
-      });
+        }
+      );
 
-      devShells = forAllSystems (system: {
-        default =
-          with nixpkgs.legacyPackages.${system};
-          mkShell {
+      devShells = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+        in
+        {
+          default = pkgs.mkShell {
             inherit (self.checks.${system}.pre-commit-check) shellHook;
             packages = [
-              opentofu
-              tflint
-              terraform-docs
-              awscli2
+              pkgs.opentofu
+              pkgs.tflint
+              pkgs.terraform-docs
+              pkgs.awscli2
+              pkgs.nixfmt-rfc-style
             ];
           };
-      });
+        }
+      );
 
     };
 }
