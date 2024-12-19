@@ -1,7 +1,7 @@
 resource "aws_ssm_document" "nixos_deploy" {
   name          = var.name
   document_type = "Command"
-  tags = var.tags
+  tags          = var.tags
   content = jsonencode({
     schemaVersion = "2.2"
     description   = "Deploy to NixOS"

@@ -1,15 +1,55 @@
 {
   description = "Terraform module for deploying to NixOS using SSM";
 
-  inputs = { nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable"; };
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+    pre-commit-hooks.url = "github:cachix/git-hooks.nix";
+  };
 
-  outputs = { nixpkgs, ... }: {
+  outputs =
+    {
+      self,
+      nixpkgs,
+      pre-commit-hooks,
+      ...
+    }:
+    let
+      supportedSystems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
 
-    devShells = nixpkgs.lib.genAttrs [ "aarch64-darwin" "x86_64-linux" ]
-      (system: {
-        default = with nixpkgs.legacyPackages.${system};
-          mkShell { packages = [ opentofu terraform-docs awscli2 ]; };
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+    in
+    {
+      checks = forAllSystems (system: {
+        pre-commit-check = pre-commit-hooks.lib.${system}.run {
+          src = ./.;
+          hooks = {
+            shellcheck.enable = true;
+            actionlint.enable = true;
+            tflint.enable = true;
+            terraform-format.enable = true;
+            # terraform-validate.enable = true;
+            nixfmt-rfc-style.enable = true;
+          };
+        };
       });
 
-  };
+      devShells = forAllSystems (system: {
+        default =
+          with nixpkgs.legacyPackages.${system};
+          mkShell {
+            inherit (self.checks.${system}.pre-commit-check) shellHook;
+            packages = [
+              opentofu
+              tflint
+              terraform-docs
+              awscli2
+            ];
+          };
+      });
+
+    };
 }

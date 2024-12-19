@@ -1,7 +1,7 @@
 variable "name" {
-    description = "The name of the SSM document"
-    type        = string
-    default     = "NixOS-Deploy"
+  description = "The name of the SSM document"
+  type        = string
+  default     = "NixOS-Deploy"
 }
 
 variable "action" {
@@ -29,7 +29,7 @@ variable "nix_config" {
 }
 
 variable "tags" {
-    description = "A mapping of tags to assign to the document"
-    type        = map(string)
-    default     = {}
+  description = "A mapping of tags to assign to the document"
+  type        = map(string)
+  default     = {}
 }

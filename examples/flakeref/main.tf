@@ -45,7 +45,7 @@ resource "aws_iam_instance_profile" "webserver" {
 
 resource "aws_instance" "webserver" {
   count                = 2
-  ami                  = data.aws_ami.nixos_arm64.id
+  ami                  = data.aws_ami.nixos.id
   iam_instance_profile = aws_iam_instance_profile.webserver.name
   instance_type        = "t3a.small"
   tags = {
