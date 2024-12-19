@@ -32,6 +32,16 @@
             tflint.enable = true;
             terraform-format.enable = true;
             # terraform-validate.enable = true;
+
+            terraform-docs = {
+              enable = true;
+              name = "terraform-docs";
+              entry = "terraform-docs markdown --recursive --recursive-path examples --output-file README.md .";
+              files = "(README.md|\\.tf)$";
+              pass_filenames = false;
+              language = "system";
+
+            };
             nixfmt-rfc-style.enable = true;
           };
         };
