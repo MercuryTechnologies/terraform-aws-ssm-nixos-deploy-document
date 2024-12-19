@@ -163,7 +163,10 @@ using SSM and a self-hosted binary cache. A next step would be to put this all i
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.46 |
 
 ## Providers
 
@@ -184,11 +187,12 @@ No requirements.
 | [aws_iam_instance_profile.webserver](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_policy.read_cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.webserver](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.dhmc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.webserver](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_instance.webserver](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
 | [aws_s3_bucket.cache](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
 | [aws_ssm_association.webserver](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_association) | resource |
-| [aws_ami.nixos_arm64](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
+| [aws_ami.nixos](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 
 ## Inputs
 
@@ -196,6 +200,7 @@ No requirements.
 |------|-------------|------|---------|:--------:|
 | <a name="input_public_key"></a> [public\_key](#input\_public\_key) | The public key used to sign store paths pushed to store\_uri | `string` | n/a | yes |
 | <a name="input_store_path"></a> [store\_path](#input\_store\_path) | The nix store path to substitute on the machine. Must be pushed to outputs.store\_uri and signed with var.public\_key beforehand. | `string` | `"/run/current-system"` | no |
+| <a name="input_use_dhmc"></a> [use\_dhmc](#input\_use\_dhmc) | Whether to use the default EC2 management role | `bool` | `false` | no |
 
 ## Outputs
 
