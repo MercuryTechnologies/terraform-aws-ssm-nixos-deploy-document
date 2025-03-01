@@ -1,17 +1,29 @@
 # Deploying a flake ref
 
-> [!NOTE]
-> This example assumes that [Default Host Management Configuration](https://docs.aws.amazon.com/systems-manager/latest/userguide/fleet-manager-default-host-management-configuration.html) is **not** used.  If you use DHMC, you need to attach the IAM poliy to the IAM role that is configured there instead of the instance profile.
-
 In this example, we will deploy a flake ref to a set of EC2 instances. The flake will be evaluated and built on the instances themselves.
 
-First we define some instances:
+First we define some instances, and attach a policy to allow them to communicate with SSM.
+
+> [!NOTE]
+> This example assumes that [Default Host Management Configuration](https://docs.aws.amazon.com/systems-manager/latest/userguide/fleet-manager-default-host-management-configuration.html) is **not** used.  If you use DHMC, you do not need to attach this policy to the instance profile or have an instance profile at all.
+
 
 ```hcl
+resource "aws_iam_role_policy_attachment" "ssm" {
+  role       = aws_iam_role.webserver.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_instance_profile" "webserver" {
+  name = "webserver"
+  role = aws_iam_role.webserver.name
+}
+
 resource "aws_instance" "webserver" {
-  count         = 2
-  ami           = data.aws_ami.nixos.id
-  instance_type = "t3a.small"
+  count                = 2
+  ami                  = data.aws_ami.nixos.id
+  iam_instance_profile = aws_iam_instance_profile.webserver.name
+  instance_type        = "t3a.small"
   tags = {
     Role = "webserver"
   }
