@@ -40,7 +40,7 @@ aws ssm send-command \
 See [examples/flakeref](./examples/flakeref) for a complete example.
 
 ```hcl
-resource "aws_ssm_association" {
+resource "aws_ssm_association" "flakeref" {
   name = module.nixos_deploy_document.id
   targets {
     key    = "tag:Role"
@@ -58,7 +58,7 @@ resource "aws_ssm_association" {
 See [examples/flakeref](./examples/nix-store-path) for a complete example.
 
 ```hcl
-resource "aws_ssm_association" {
+resource "aws_ssm_association" "store_path" {
   name = module.nixos_deploy_document.id
   targets {
     key    = "tag:Role"
